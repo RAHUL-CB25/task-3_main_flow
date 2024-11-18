@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="style.css"> <!-- Link to your CSS file -->
+</head>
+<body>
+    <h1>Login</h1>
+    <form id="loginForm">
+        <input type="email" name="email" placeholder="Email" required />
+        <input type="password" name="password" placeholder="Password" required />
+        <button type="submit">Login</button>
+        <div id="errorMessage" style="color: red; display: none;"></div> <!-- Error message display -->
+    </form>
+
+    <script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault(); // Prevent page reload on form submit
+        
+        const formData = new FormData(e.target);
+        const data = {};
+        formData.forEach((value, key) => {
+            data[key] = value;
+        });
+        
+        try {
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            
+            const result = await response.json();
+            
+            if (response.ok) {
+                // Success, redirect to the landing page of Main Flow
+                window.location.href = '/'; // Change this to the correct URL for Main Flow landing page
+            } else {
+                // Display error message
+                document.getElementById('errorMessage').textContent = result.message;
+                document.getElementById('errorMessage').style.display = 'block';
+            }
+        } catch (err) {
+            console.error(err);
+            document.getElementById('errorMessage').textContent = "Something went wrong!";
+            document.getElementById('errorMessage').style.display = 'block';
+        }
+    });
+    </script>
+</body>
+</html>
+
